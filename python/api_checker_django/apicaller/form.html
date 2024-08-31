@@ -1,0 +1,15 @@
+<!-- apicaller/templates/apicaller/form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Caller</title>
+</head>
+<body>
+    <h1>API Caller</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

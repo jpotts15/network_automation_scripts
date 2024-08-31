@@ -1,0 +1,7 @@
+---
+- name: STIG Check for Cisco Device
+  hosts: cisco_devices
+  gather_facts: no
+  tasks:
+    - name: STIG {{ stig_id }}
+      import_tasks: ./{{ task_file_name }}

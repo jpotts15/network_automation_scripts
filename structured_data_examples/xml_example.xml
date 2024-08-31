@@ -1,0 +1,16 @@
+<root>
+ <countries>
+  <element>
+   <hemisphere>Northern</hemisphere>
+   <name>USA</name>
+    </element>
+    <element>
+    <hemisphere>Northern</hemisphere>
+    <name>Germany</name>
+   </element>
+   <element>
+    <hemisphere>Southern</hemisphere>
+    <name>Australia</name>
+   </element>
+  </countries>
+</root>

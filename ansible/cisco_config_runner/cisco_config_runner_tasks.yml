@@ -1,0 +1,32 @@
+---
+- name: Check and apply service-password-encryption
+  hosts: cisco_devices
+  gather_facts: no
+  tasks:
+    - name: Get running configuration
+      cisco.ios.ios_config:
+        get: running
+      register: running_config
+
+    - name: Check if 'service password-encryption' is present
+      set_fact:
+        encryption_present: "{{ 'service password-encryption' in running_config.stdout[0] }}"
+
+    - name: Apply 'service password-encryption' if not present
+      cisco.ios.ios_config:
+        lines:
+          - service password-encryption
+      when: not encryption_present
+      register: config_update
+
+    - name: Save the updated configuration to file
+      copy:
+        content: "{{ running_config.stdout[0] }}"
+        dest: "./output/config_{{ inventory_hostname }}.txt"
+      when: not encryption_present
+
+    - name: Save the initial configuration to file if no update was needed
+      copy:
+        content: "{{ running_config.stdout[0] }}"
+        dest: "./output/config_no_change_{{ inventory_hostname }}.txt"
+      when: encryption_present

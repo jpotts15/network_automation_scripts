@@ -1,0 +1,7 @@
+countries:
+  - name: 'USA'
+    hemisphere: 'northern'
+  - name: 'Germany'
+    hemisphere: 'northern'
+  - name: 'Australia'
+    hemisphere: 'southern'

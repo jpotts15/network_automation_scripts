@@ -1,0 +1,7 @@
+---
+- name: Execute Cisco device commands and save outputs
+  hosts: cisco_devices
+  gather_facts: no
+  tasks:
+    - name: Import Cisco task commands
+      import_tasks: cisco_command_runner_tasks.yml

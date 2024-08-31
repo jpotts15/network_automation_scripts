@@ -1,0 +1,12 @@
+{% for command in commands %}
+- name: Run '{{ command }}' command
+    cisco.ios.ios_command:
+    commands:
+        - {{ command }}
+    register: "{{ command | replace(' ', '_') | replace(':', '') | lower }}_output"
+
+- name: Save '{{ command }}' output to file
+    copy:
+    content: "{{ ({{ command | replace(' ', '_') | replace(':', '') | lower }}_output.stdout[0]) }}"
+    dest: "/path/to/save/{{ command | replace(' ', '_') | replace(':', '') | lower }}_{{ inventory_hostname }}.txt"
+{% endfor %}

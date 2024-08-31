@@ -1,0 +1,21 @@
+- name: Run 'show version' command
+  cisco.ios.ios_command:
+    commands:
+      - show version
+  register: show_version_output
+
+- name: Save 'show version' output to file
+  copy:
+    content: "{{ show_version_output.stdout[0] }}"
+    dest: "./output//show_version_{{ inventory_hostname }}.txt"
+
+- name: Run 'show ip interface brief' command
+  cisco.ios.ios_command:
+    commands:
+      - show ip interface brief
+  register: show_ip_interface_brief_output
+
+- name: Save 'show ip interface brief' output to file
+  copy:
+    content: "{{ show_ip_interface_brief_output.stdout[0] }}"
+    dest: "./output/show_ip_interface_brief_{{ inventory_hostname }}.txt"

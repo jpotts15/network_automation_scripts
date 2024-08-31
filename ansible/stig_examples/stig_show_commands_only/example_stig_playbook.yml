@@ -1,0 +1,7 @@
+---
+- name: STIG Check for Cisco Device
+  hosts: cisco_devices
+  gather_facts: no
+  tasks:
+    - name: STIG V-215847
+      import_tasks: ./example_stig_task_v215847.yml

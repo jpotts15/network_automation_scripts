@@ -1,0 +1,7 @@
+---
+- name: Check and apply service-password-encryption and save configuration
+  hosts: cisco_devices
+  gather_facts: no
+  tasks:
+    - name: Import Cisco tasks
+      import_tasks: cisco_config_runner_tasks.yml

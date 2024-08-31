@@ -1,0 +1,42 @@
+---
+- name: Get show archive output from Cisco device
+  cisco.ios.ios_command:
+    commands:
+      - show archive
+  register: show_output
+
+- name: Determine if the check passes
+  block:
+    - name: Set STIG ID for passing scenario
+      set_fact:
+        V-215847:
+          status: "NotAFinding"
+          finding_details: "Passes per automation finding the STIG check"
+          comments: "{{ show_output.stdout[0] }}"
+    - name: Write results to output file
+      copy:
+        content: |
+          Device: {{ ansible_hostname }}_stig_results.txt
+          Status: {{ V-215847.status }}
+          Finding Details: {{ V-215847.finding_details }}
+          Comments: {{ V-215847.comments }}
+        dest: "{{ ansible_hostname }}_stig_results.txt"
+  when: show_output.stdout[0] | length) > 1
+
+- name: Fail if the output doesn't match the condition
+  block:
+    - name: Set STIG ID for failing scenario
+      set_fact:
+        V-215847:
+          status: "Open"
+          finding_details: "Doesn't Pass per automation finding the STIG check"
+          comments: "{{ show_output.stdout[0] }}"
+    - name: Write results to output file
+      copy:
+        content: |
+          Device: {{ ansible_hostname }}_stig_results.txt
+          Status: {{ V-215847.status }}
+          Finding Details: {{ V-215847.finding_details }}
+          Comments: {{ V-215847.comments }}
+        dest: "{{ ansible_hostname }}_stig_results.txt"
+  when: V-215847 is not defined 
