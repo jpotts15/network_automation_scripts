@@ -1,0 +1,26 @@
+event manager applet IP_SLA_Monitor
+ event timer watchdog time 30
+ action 1.0 cli command "enable"
+ action 2.0 cli command "show ip sla stat 1 | in Latest operation return code:"
+ action 2.1 regexp "Timeout" $_cli_result $_regexp_result 
+ action 3.0 syslog msg $_regexp_result 
+ action 4.0 if $_regexp_result eq 1
+  action 4.1 cli command "configure terminal"
+  action 4.2 cli command "interface GigabitEthernet0/0"
+  action 4.3 cli command "ip address dhcp"
+  action 4.4 cli command "end"
+  action 4.5 cli command "write memory"
+  action 4.6 syslog msg "All IP SLA operations failed. Changing GigabitEthernet0/0/0 to DHCP."
+  action 5.0 cli command "event manager applet IP_SLA_Recheck"
+  action 5.1 cli command "event timer countdown time 1800"
+  action 5.2 cli command "action 1.0 cli command \"enable\""
+  action 5.3 cli command "action 2.0 cli command \"show ip sla statistics | include 1|2|3\""
+  action 5.4 cli command "action 3.0 regexp \"1.*, Fail.*|2.*, Fail.*|3.*, Fail.*\" \"$_cli_result\" result"
+  action 5.5 cli command "action 4.0 if \$result eq 1"
+  action 5.6 cli command "action 4.1 cli command \"reload in 1\""
+  action 5.7 cli command "action 4.2 syslog msg \"Rebooting due to IP SLA failures after 30 minutes.\""
+  action 5.8 cli command "action 5.0 else"
+  action 5.9 cli command "action 5.1 syslog msg \"IP SLA recovered, no reboot.\""
+  action 5.10 cli command "end"
+  action 5.11 end
+ end

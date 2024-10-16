@@ -1,0 +1,5 @@
+ip_sla_num,device1_ip,device2_ip,sla_type,port,threshold,frequency
+5,192.168.1.1,192.168.1.2,icmp,,,5
+,192.168.2.1,192.168.2.2,icmp,,,5
+,192.168.3.1,192.168.3.2,icmp,,,5
+,192.168.4.1,192.168.4.2,icmp,,,5
