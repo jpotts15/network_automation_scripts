@@ -266,3 +266,68 @@ class IPConverter:
 
         print(ip_data)
         return ip_data
+    
+def dictionary_walker(dict_in, return_dict=None, current_key_path=None, list_limit=None):
+    '''
+    Walks a dictionary or a list of dictionaries to create a schema/blank dict.
+    Handles nested dictionaries and lists of dictionaries.
+    Allows limiting the iteration of lists based on a given list length limit.
+    '''
+    if return_dict is None:
+        return_dict = {}
+    if current_key_path is None:
+        current_key_path = []
+
+    assert isinstance(dict_in, (dict, list)), "Input must be a dictionary or a list"
+
+    if isinstance(dict_in, dict):
+        for key, value in dict_in.items():
+            # Update the current path with the new key
+            new_key_path = current_key_path + [key]
+
+            # Create a reference to the current position in the return_dict
+            current_dict = return_dict
+            for path_key in current_key_path:
+                current_dict = current_dict.setdefault(path_key, {})
+
+            if isinstance(value, dict):
+                # If the value is a dictionary, add an empty dict and recurse
+                current_dict[key] = {}
+                dictionary_walker(value, return_dict, new_key_path, list_limit)
+            
+            elif isinstance(value, list):
+                # If the value is a list, check its length against the list_limit
+                if list_limit is not None and len(value) == list_limit:
+                    continue  # Skip adding this list if it meets the list_limit criteria
+                
+                current_dict[key] = []
+                for item in value:
+                    if isinstance(item, dict):
+                        # If the list contains a dict, create a template for it
+                        list_item_template = {}
+                        current_dict[key].append(list_item_template)
+                        dictionary_walker(item, list_item_template, [], list_limit)
+                    else:
+                        # Otherwise, just append a placeholder
+                        current_dict[key].append(None)
+            
+            else:
+                # If it's not a dict or list, add an empty value or None
+                current_dict[key] = None
+
+    elif isinstance(dict_in, list):
+        return_dict = []
+        if list_limit is not None and len(dict_in) == list_limit:
+            return return_dict  # Skip processing this list if it meets the list_limit criteria
+
+        for item in dict_in:
+            if isinstance(item, dict):
+                # If the list contains a dict, process it
+                list_item_template = {}
+                return_dict.append(list_item_template)
+                dictionary_walker(item, list_item_template, [], list_limit)
+            else:
+                # Otherwise, just append a placeholder
+                return_dict.append(None)
+
+    return return_dict
