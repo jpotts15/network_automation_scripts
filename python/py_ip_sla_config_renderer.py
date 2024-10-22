@@ -1,3 +1,12 @@
+"""
+Python IP SLA config renderer with pyqt5 frontend
+Created by: Joseph Potts
+Version 1.0
+Last Update: 22Sept2024
+
+python3 -m py_ip_sla_config_renderer.py
+"""
+
 from PyQt5 import QtWidgets, QtGui
 from jinja2 import Template
 import sys
@@ -28,7 +37,7 @@ class IPSLAGeneratorApp(QtWidgets.QWidget):
 
         self.sla_type_label = QtWidgets.QLabel('IP SLA Type:')
         self.sla_type_dropdown = QtWidgets.QComboBox()
-        self.sla_type_dropdown.addItems(['icmp', 'icmp jitter', 'udp', 'tcp'])
+        self.sla_type_dropdown.addItems(['icmp-echo', 'icmp-jitter', 'udp-echo_sla', 'tcp'])
         self.sla_type_dropdown.currentTextChanged.connect(self.toggle_port_field)
 
         self.port_label = QtWidgets.QLabel('Port:')
@@ -171,7 +180,7 @@ class IPSLAGeneratorApp(QtWidgets.QWidget):
             # Jinja2 template
             template_str = """
             ip sla {{ ip_sla_num }}
-             {{ sla_type }}-echo {{ device_ip }}{% if port %} port {{ port }}{% endif %}
+             {{ sla_type }} {{ device_ip }}{% if port %} port {{ port }}{% endif %}
              threshold {{ threshold }}
              frequency {{ frequency }}
             ip sla schedule {{ ip_sla_num }} life forever start-time now
@@ -220,7 +229,7 @@ class IPSLAGeneratorApp(QtWidgets.QWidget):
                         # Generate config
                         template_str = """
                         ip sla {{ ip_sla_num }}
-                         {{ sla_type }}-echo {{ device_ip }}{% if port %} port {{ port }}{% endif %}
+                         {{ sla_type }} {{ device_ip }}{% if port %} port {{ port }}{% endif %}
                          threshold {{ threshold }}
                          frequency {{ frequency }}
                         ip sla schedule {{ ip_sla_num }} life forever start-time now
